@@ -12,10 +12,12 @@ export const Product = styled(Link, {
   background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100%)',
   borderRadius: 8,
   cursor: 'pointer',
-  textDecoration: 'none',
   position: 'relative',
   overflow: 'hidden',
   minWidth: 540,
+
+  textDecoration: 'none',
+  color: '$gray100',
 
   display: 'flex',
   alignItems: 'center',
