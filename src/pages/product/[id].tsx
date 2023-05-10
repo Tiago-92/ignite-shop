@@ -1,11 +1,20 @@
+import { useState } from "react"
+
 import { stripe } from "@/lib/stripe"
-import { ImageContainer, ProductContainer, ProductDetails } from "@/styles/pages/products"
-import { GetStaticPaths, GetStaticProps } from "next"
 import Stripe from "stripe"
+
+import { 
+  ImageContainer,
+  ProductContainer, 
+  ProductDetails 
+} from "@/styles/pages/products"
+
+import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import axios from "axios"
-import { useState } from "react"
 import Head from "next/head"
+
+import Cart from "@/components/Cart"
 
 interface ProductProps {
   product: {
@@ -20,7 +29,7 @@ interface ProductProps {
 
 export default function Product({ product }: ProductProps) {
   const [isCreatingCheckoutSessions, setIsCreatingCheckoutSessions] = useState(false)
-
+  
   async function handleBuyProduct() {
     try {
       setIsCreatingCheckoutSessions(true)
@@ -59,8 +68,8 @@ export default function Product({ product }: ProductProps) {
 
         <p>{product.description}</p>
 
-        <button disabled={isCreatingCheckoutSessions} onClick={handleBuyProduct}>
-          Comprar agora
+        <button onClick={handleBuyProduct}>
+          Colocar na sacola
         </button>
       </ProductDetails>
     </ProductContainer>
