@@ -12,8 +12,8 @@ import {
 from '@/styles/components/cart'
 import Image from 'next/image'
 import closeIcon from '../assets/close-icon.svg'
-
-import tShirt from '../assets/camisetas/5.png'
+import { useContext } from 'react'
+import { AppContext, ProductType } from '@/contexts/AppContext'
 
 interface ModalProps {
   openModal: boolean
@@ -21,6 +21,22 @@ interface ModalProps {
 }
 
 export default function Cart({ openModal, closeModal } : ModalProps) {
+  const { cartItems, removeToCart } = useContext(AppContext)
+
+  const totalItems = cartItems.length
+
+  const sumValues = cartItems.reduce((acc, item) => acc + parseFloat(item.price.replace(/[^\d.,]/g, '').replace(',', '.')), 0)
+  const totalValue = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(sumValues)
+
+  function handleRemoveItemToCart(product: ProductType) {
+    removeToCart(product)
+
+    console.log(cartItems)
+  }
+
   if (!openModal) {
     return null
   }
@@ -33,52 +49,30 @@ export default function Cart({ openModal, closeModal } : ModalProps) {
       <ListContainer>
         <h1>Sacola de compras</h1>
 
-        <ProductContainer>
-          <ImageContainer>
-            <Image src={tShirt} alt="" width={100} height={100} />
-          </ImageContainer>
-          
-          <ProductDetails>
-            <p>Camiseta Beyond the Limits</p>
-            <span>R$ 79,90</span>
-            <button>Remover</button>
-          </ProductDetails>
+        {cartItems.map((product) => (
+          <ProductContainer key={product.id}>
+            <ImageContainer>
+              <Image src={product.imageUrl} alt="" width={100} height={100} />
+            </ImageContainer>
+            
+            <ProductDetails>
+              <p>{product.name}</p>
+              <span>{product.price}</span>
+              <button onClick={() => handleRemoveItemToCart(product)}>Remover</button>
+            </ProductDetails>
         </ProductContainer>
-
-        <ProductContainer>
-          <ImageContainer>
-            <Image src={tShirt} alt="" width={100} height={100} />
-          </ImageContainer>
-          
-          <ProductDetails>
-            <p>Camiseta Beyond the Limits</p>
-            <span>R$ 79,90</span>
-            <button>Remover</button>
-          </ProductDetails>
-        </ProductContainer>
-
-        <ProductContainer>
-          <ImageContainer>
-            <Image src={tShirt} alt="" width={100} height={100} />
-          </ImageContainer>
-          
-          <ProductDetails>
-            <p>Camiseta Beyond the Limits</p>
-            <span>R$ 79,90</span>
-            <button>Remover</button>
-          </ProductDetails>
-        </ProductContainer>
+        ))}        
       </ListContainer>
 
       <FinalizePurchaseContainer>
         <QuantityContainer>
           <span>Quantidade</span>
-          <span>3 itens</span>
+          <span>{totalItems}</span>
         </QuantityContainer>
 
         <TotalContainer>
           <span>Valor total</span>
-          <span>R$ 270,00</span>
+          <span>{totalValue}</span>
         </TotalContainer>
 
         <button>Finalizar compra</button>

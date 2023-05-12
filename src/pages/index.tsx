@@ -11,22 +11,29 @@ import { HomeContainer, Product } from "../styles/pages/home"
 
 import 'keen-slider/keen-slider.min.css'
 import Stripe from "stripe"
-interface HomeProps {
-  products: {
-    id: string
-    name: string
-    imageUrl: string
-    price: string
-  }[]
+import { useContext } from "react"
+import { AppContext, ProductType } from "@/contexts/AppContext"
+import { MouseEvent } from "react"
+export interface HomeProps {
+  products: ProductType[]
 }
 
 export default function Home({ products }: HomeProps) {
+  const { addToCart, cartItems } = useContext(AppContext)
+
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 2,
       spacing: 48,
     }
   })
+
+  function handleAddToCart(e: MouseEvent<HTMLButtonElement>, product: ProductType) {
+    e.preventDefault()
+    addToCart(product)
+
+    console.log(cartItems)
+  }
 
   return (
     <>
@@ -44,9 +51,12 @@ export default function Home({ products }: HomeProps) {
                 <div>
                   <strong>{product.name}</strong>
                   <span>{product.price}</span>
+                  <span>Aqui tá só o número {product.numberPrice}</span>
                 </div>
-                
-                <Image src={greenBag} alt="" />
+
+                <button onClick={(e) => handleAddToCart(e, product)}>
+                  <Image src={greenBag} alt="" />
+                </button>                
               </footer>
             </Product>
           )

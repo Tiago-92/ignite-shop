@@ -9,7 +9,8 @@ import { useState } from 'react'
 import logoImg from '../assets/logo.svg'
 import bag from '../assets/bag.svg'
 import Image from 'next/image'
-
+import Link from 'next/link'
+import { AppContextProvider } from '@/contexts/AppContext'
 
 globalStyles()
 
@@ -25,21 +26,25 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <Container>
-      <HeaderContainer>
-        <Image src={logoImg} alt="" />
+    <AppContextProvider>
+      <Container>
+        <HeaderContainer>
+          <Link href="/">
+            <Image src={logoImg} alt="" />
+          </Link>
+        
+          <button onClick={handleOpenModal}>
+            <Image src={bag} alt="" />
+          </button>
+        </HeaderContainer>
 
-        <button onClick={handleOpenModal}>
-          <Image src={bag} alt="" />
-        </button>
-      </HeaderContainer>
+        <Cart 
+          openModal={isModalOpen}
+          closeModal={handleCloseModal} 
+        />
 
-      <Cart 
-        openModal={isModalOpen}
-        closeModal={handleCloseModal} 
-      />
-
-      <Component {...pageProps} />
-    </Container>
+        <Component {...pageProps} />
+      </Container>
+    </AppContextProvider>
   )
 }

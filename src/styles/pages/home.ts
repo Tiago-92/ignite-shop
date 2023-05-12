@@ -61,6 +61,12 @@ export const Product = styled(Link, {
       fontWeight: 'bold',
       color: '$green300',
     },
+
+    button: {
+      background: 'transparent',
+      border: 'none',
+      cursor: 'pointer'
+    }
   },
 
   '&:hover': {
