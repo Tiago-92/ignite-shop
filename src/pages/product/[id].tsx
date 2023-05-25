@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 
 import { stripe } from "@/lib/stripe"
 import Stripe from "stripe"
@@ -11,46 +11,20 @@ import {
 
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
-import axios from "axios"
 import Head from "next/head"
-
-import Cart from "@/components/Cart"
+import { AppContext, ProductType } from "@/contexts/AppContext"
 
 interface ProductProps {
-  product: {
-    id: string
-    name: string
-    imageUrl: string
-    price: string
-    description: string
-    defaultPriceId: string
-  }
+  product: ProductType
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isCreatingCheckoutSessions, setIsCreatingCheckoutSessions] = useState(false)
-  
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSessions(true)
+  const { addToCart } = useContext(AppContext)
 
-      const response = await axios.post(`/api/checkout`, {
-        priceId: product.defaultPriceId
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl
-
-    } catch (err) {
-      // Conectar com uma ferramenta de observalidade (Datalog, Sentry)
-
-      setIsCreatingCheckoutSessions(false)
-
-      alert("Falha ao redirecionar ao checkout")
-    }
+  function handleAddToCart(product: ProductType) {
+    addToCart(product)
   }
-
+  
   return (
     <>
     <Head>
@@ -68,7 +42,7 @@ export default function Product({ product }: ProductProps) {
 
         <p>{product.description}</p>
 
-        <button onClick={handleBuyProduct}>
+        <button onClick={() => handleAddToCart(product)}>
           Colocar na sacola
         </button>
       </ProductDetails>

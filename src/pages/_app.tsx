@@ -1,22 +1,24 @@
 import { globalStyles } from '@/styles/global'
 import { AppProps } from 'next/app'
 
-import { Container, HeaderContainer } from '../styles/pages/app'
+import { Container } from '../styles/pages/app'
 
 import Cart from '@/components/Cart'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
-import logoImg from '../assets/logo.svg'
-import bag from '../assets/bag.svg'
-import Image from 'next/image'
-import Link from 'next/link'
-import { AppContextProvider } from '@/contexts/AppContext'
+import { AppContext, AppContextProvider } from '@/contexts/AppContext'
+
+import Header from '@/components/Header'
 
 globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { totalQuantity } = useContext(AppContext)
   const [isModalOpen, setIsModalOpen] = useState(false)
- 
+
+  console.log(totalQuantity)
+
+
   function handleOpenModal() {
     setIsModalOpen(true)
   }
@@ -27,24 +29,15 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <AppContextProvider>
-      <Container>
-        <HeaderContainer>
-          <Link href="/">
-            <Image src={logoImg} alt="" />
-          </Link>
-        
-          <button onClick={handleOpenModal}>
-            <Image src={bag} alt="" />
-          </button>
-        </HeaderContainer>
-
+      <div>
+        <Header open={handleOpenModal} />
         <Cart 
           openModal={isModalOpen}
-          closeModal={handleCloseModal} 
+          closeModal={handleCloseModal}
         />
 
         <Component {...pageProps} />
-      </Container>
+      </div>
     </AppContextProvider>
   )
 }

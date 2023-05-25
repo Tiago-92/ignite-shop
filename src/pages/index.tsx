@@ -19,7 +19,7 @@ export interface HomeProps {
 }
 
 export default function Home({ products }: HomeProps) {
-  const { addToCart, cartItems } = useContext(AppContext)
+  const { addToCart } = useContext(AppContext)
 
   const [sliderRef] = useKeenSlider({
     slides: {
@@ -31,8 +31,6 @@ export default function Home({ products }: HomeProps) {
   function handleAddToCart(e: MouseEvent<HTMLButtonElement>, product: ProductType) {
     e.preventDefault()
     addToCart(product)
-
-    console.log(cartItems)
   }
 
   return (
@@ -51,7 +49,6 @@ export default function Home({ products }: HomeProps) {
                 <div>
                   <strong>{product.name}</strong>
                   <span>{product.price}</span>
-                  <span>Aqui tá só o número {product.numberPrice}</span>
                 </div>
 
                 <button onClick={(e) => handleAddToCart(e, product)}>
@@ -71,7 +68,7 @@ export const getStaticProps: GetStaticProps = async () => {
     expand: ['data.default_price']
   })
 
-  const products = response.data.map(product => {
+  const products = response.data.map((product) => {
     const price = product.default_price as Stripe.Price
 
     return {
@@ -81,7 +78,9 @@ export const getStaticProps: GetStaticProps = async () => {
       price: new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
-      }).format(price.unit_amount as number / 100)
+      }).format(price.unit_amount as number / 100),
+      numberPrice: price.unit_amount / 100,
+      defaultPriceId: price.id,
     }
   })
 
